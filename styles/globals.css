@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Axiforma';
+    src: url('/fonts/Axiforma-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Axiforma';
+    src: url('/fonts/Axiforma-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  /* Imposta Axiforma come font globale */
+  body {
+    font-family: 'Axiforma', sans-serif;
+    color: white;
+    background-color: #121212;
+  }

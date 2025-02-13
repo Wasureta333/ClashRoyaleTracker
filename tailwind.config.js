@@ -6,7 +6,15 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        axiforma: ["Axiforma", "sans-serif"],
+      },
+      fontWeight: {
+        bold: "700",
+        black: "900",
+      },
+    },
   },
   plugins: [],
 };
