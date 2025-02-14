@@ -101,7 +101,7 @@ export function Navbar() {
                                             whileTap={{ scale: 0.95 }}
                                             className="w-full">
                                         <Link href={playerData ? `/user/${encodeURIComponent(playerData.name)}` : "#"} passHref>
-                                        <Button className="-mt-1 w-full bg-gray-500 h-14 text-white flex justify-between items-center px-4">
+                                        <Button className="mt-0 w-full bg-gray-500 h-14 text-white flex justify-between items-center px-4">
                                             {/* Sinistra: Nome e Livello */}
                                             <div className="text-left">
                                                 <span className="font-bold">{playerData?.name || "Unknown"}</span>{" "}
