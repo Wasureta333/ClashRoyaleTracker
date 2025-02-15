@@ -6,11 +6,33 @@
   
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: #292929; /* Leggermente più chiaro quando si passa sopra */
+}
+
+::-webkit-scrollbar {
+  width: 8px; /* Dimensione della scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Rende lo sfondo trasparente */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #121212; /* Cambia questo colore con il tuo "defaultBg2" */
+  border-radius: 10px; /* Smussa i bordi */
+}
+
 @font-face {
   font-family: 'Axiforma';
   src: url('/fonts/Axiforma-Regular.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #1E1E1E transparent;
 }
 
 @font-face {
@@ -32,6 +54,7 @@ body {
     font-family: 'Axiforma', sans-serif;
     color: white;
     background-color: #121212;
+    -ms-overflow-style: none;
 }
 
 @layer base {

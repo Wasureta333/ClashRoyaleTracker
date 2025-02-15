@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="it">
       <head />
       <body className="flex flex-col min-h-screen">
-        <Navbar />
+        <Navbar/>
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

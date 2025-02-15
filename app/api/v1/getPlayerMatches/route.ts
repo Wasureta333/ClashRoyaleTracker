@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
-        const { searchParams } = new URL(request.url);
-        const playerTag = searchParams.get("playerTag")?.toUpperCase();
+        //const { searchParams } = new URL(request.url);
+        //const playerTag = searchParams.get("playerTag")?.toUpperCase();
+        const playerTag = 'R89UG2G';
         const url = `https://api.clashroyale.com/v1/players/${encodeURIComponent(`#${playerTag}`)}/battlelog`;
         const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+
+        console.log(url);
     
         try {
             const response = await fetch(url, {
@@ -32,4 +35,6 @@ export async function GET(request) {
               );
             return 
         }
+
+        
 }
