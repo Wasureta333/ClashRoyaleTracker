@@ -55,62 +55,79 @@ export default function PlayerProfile() {
             width={1}
             height={1}
             src="/banner1.jpg"/>
-
         </div>
 
-        <div className="container mx-auto p-4">
-        <h2 className="text-xl font-semibold mb-4 text-right">Matches</h2>
-        {
-        loading
-            ? (<p className="text-xl font-semibold mb-4 text-right">Loading matches..</p> // ✅ Mostra un messaggio di caricamento
-            )
-            : playerMatches.length === 0
-                ? (<p>No matches found.</p> // ✅ Gestisce il caso di nessun match
+        <div className="container mx-auto p-4 bg-blue-500">
+            <h2 className="text-xl font-semibold mb-4 text-right">Matches</h2>
+            {loading
+                ? (<p className="text-xl font-semibold mb-4 text-right">Loading matches..</p>
                 )
-                : (playerMatches.map((match, index) => (<div key={index}
-                    className="bg-defaultBg2 shadow-md rounded-lg mb-2 w-1/2 ml-auto">
-                    <div className="flex justify-between w-full"> {/* Nome del primo giocatore con "WIN" o "LOSE" */}
-                        <div className="flex items-center gap-2 pl-3 pt-3">
-                            <h3 className="text-lg font-bold"> {
-                                match.team[0] ?. name
-                            }</h3>
-                            {
-                            match.opponent[0] ?. trophyChange > 0
-                                ? (<h3 className="text-lg font-bold text-green-500">WIN</h3>)
-                                : (<h3 className="text-lg font-bold text-red-500">LOSE</h3>)
-                        } </div>
-                        {/* Nome dell'avversario con "WIN" o "LOSE" */}
-                        <div className="flex items-center gap-2 pr-3 pt-3"> {
-                            match.opponent[0] ?. trophyChange > 0
-                                ? (<h3 className="text-lg font-bold text-red-500">LOSE</h3>)
-                                : (<h3 className="text-lg font-bold text-green-500">WIN</h3>)
-                        }
-                            <h3 className="text-lg font-bold"> {
-                                match.opponent[0] ?. name
-                            }</h3>
-                        </div>
-                    </div>
-                    {/* <p className="text-sm text-gray-600">{match.arena?.name || "Sconosciuta"}</p> */}
-                    {/* <p className="text-sm text-gray-600">Modalità: {match.gameMode?.name || "Sconosciuta"}1</p> */}
-                    <div className="mt-0 grid grid-cols-4 m-0 p-0"> {
-                        match.team[0] ?. cards ?. map((card) => (<div key={
-                                card.id
+                : playerMatches.length === 0
+                    ? (<p>No matches found.</p>
+                    )
+                    : (playerMatches.map((match, index) => (<div key={index}
+                        className="bg-defaultBg2 shadow-md rounded-lg mb-2 w-1/2 ml-auto">
+                        <div className="flex justify-between w-full"> {/* Nome del primo giocatore con "WIN" o "LOSE" */}
+                            <div className="flex items-center gap-2 pl-3 pt-3">
+                                <h3 className="text-lg font-bold"> {
+                                    match.team[0] ?. name
+                                }</h3>
+                                {
+                                match.opponent[0] ?. trophyChange > 0
+                                    ? (<h3 className="text-lg font-bold text-green-500">WIN</h3>)
+                                    : (<h3 className="text-lg font-bold text-red-500">LOSE</h3>)
+                            } </div>
+                            {/* Nome dell'avversario con "WIN" o "LOSE" */}
+                            <div className="flex items-center gap-2 pr-3 pt-3"> {
+                                match.opponent[0] ?. trophyChange > 0
+                                    ? (<h3 className="text-lg font-bold text-red-500">LOSE</h3>)
+                                    : (<h3 className="text-lg font-bold text-green-500">WIN</h3>)
                             }
-                            className="flex flex-col items-center">
-                            <Image width={90}
-                                height={90}
-                                src={
-                                    card.iconUrls.medium
+                                <h3 className="text-lg font-bold"> {
+                                    match.opponent[0] ?. name
+                                }</h3>
+                            </div>
+                        </div>
+                        {/* <p className="text-sm text-gray-600">{match.arena?.name || "Sconosciuta"}</p> */}
+                        {/* <p className="text-sm text-gray-600">Modalità: {match.gameMode?.name || "Sconosciuta"}1</p> */}
+                        <div className="mt-0 grid grid-cols-4 m-0 p-0"> {
+                            match.team[0] ?. cards ?. map((card) => (<div key={
+                                    card.id
                                 }
-                                alt={
-                                    card.name
+                                className="flex flex-col items-center">
+                                <Image width={90}
+                                    height={90}
+                                    src={
+                                        card.iconUrls.medium
+                                    }
+                                    alt={
+                                        card.name
+                                    }
+                                    className="w-12 h-16"/>
+                            </div>))
+                        } </div>
+                        <div className="mt-0 grid grid-cols-4 m-0 p-0"> {
+                            match.opponent[0] ?. cards ?. map((card) => (<div key={
+                                    card.id
                                 }
-                                className="w-12 h-16"/>
-                        </div>))
-                    } </div>
-                </div>)))
-    } </div>);
-
+                                className="flex flex-col items-center">
+                                <Image width={90}
+                                    height={90}
+                                    src={
+                                        card.iconUrls.medium
+                                    }
+                                    alt={
+                                        card.name
+                                    }
+                                    className="w-12 h-16"/>
+                            </div>))
+                        } </div>
+                    </div>)))
+            }
+            <div className=""> 
+                bella canii!!
+            </div>
+        </div>);
       </div>
     )
     return (

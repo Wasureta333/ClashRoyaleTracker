@@ -11,7 +11,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input" 
 import { Button } from "@/components/ui/button";
 import { PlayerData } from "@/types/PlayerData";
 
@@ -45,6 +45,8 @@ export function Navbar() {
           const dataPlayer = await response.json();
           setPlayerData(dataPlayer.data);
           setApiSuccess(true);
+
+          
         } catch (error) {
           console.error("Errore nella richiesta API:", error);
           setPlayerData(null);
@@ -53,7 +55,7 @@ export function Navbar() {
     };
 
     useEffect(() => {
-        if (tag.length >= 7) {
+        if (tag.length > 6) {
             retrievePlayerData()
         } else {
             setApiSuccess(false);
