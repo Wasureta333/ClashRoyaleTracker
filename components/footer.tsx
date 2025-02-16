@@ -19,18 +19,19 @@ import { Button } from "@/components/ui/button"
 
 export function Footer(){
 
-    return(<footer className="w-full">
-            <div className="flex justify-center" id="footer-default">
-                <ul className="font-medium p-4 mt-4 rounded-l rtl:space-x-reverse flex flex-row">
+    return(<footer className="md:w-full">
+            <div className="md:flex" id="footer-container">
+                <div className="md:flex w-1/2">
+                <ul className="font-medium flex md:pl-[21.00%]">
                     <li>
-                        <Link href={"/"} className="text-defaultWhite rounded-sm hover:text-mainColor mx-32"> Contact Us </Link>
+                        <Link href={"/"} className="text-defaultWhite text-sm rounded-sm hover:text-mainColor mr-6"> Contact Us </Link>
                     </li>
                     <li>
-                        <Link href={"/"} className="text-defaultWhite rounded-sm hover:text-mainColor mx-32"> Privacy Policy </Link>
+                        <Link href={"/"} className="text-defaultWhite text-sm rounded-sm hover:text-mainColor mr-6"> Privacy Policy </Link>
                     </li>
                     <li>
                     <Dialog>
-                        <DialogTrigger className="text-defaultWhite rounded-sm hover:text-mainColor mx-32">Cookies Settings</DialogTrigger>
+                        <DialogTrigger className="text-defaultWhite text-sm rounded-sm hover:text-mainColor mr-6">Cookies Settings</DialogTrigger>
                             <DialogContent className="bg-defaultBg -mt-64">
                                 <DialogHeader>
                                     <DialogTitle className="text-left">Privacy Settings</DialogTitle>
@@ -59,8 +60,11 @@ export function Footer(){
                         </Dialog>
                     </li>
                 </ul>
+                </div>
+                <div className="md:flex pt-1 w-1/2">
+                        <p className="text-xs text-right w-full md:pr-[21.00%]">&copy; royalestracker.com is not affiliated with or endorsed by Supercell.</p>
+                </div>
             </div>
-        
         </footer>
     )
 }
