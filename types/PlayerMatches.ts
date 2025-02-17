@@ -59,6 +59,7 @@ export interface PlayerMatch {
   battleTime: string;
   isLadderTournament: boolean;
   arena: Arena;
+  leagueNumber: number;
   gameMode: GameMode;
   deckSelection: string;
   team: Player[];

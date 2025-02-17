@@ -63,7 +63,7 @@ export function Navbar() {
       }, [tag]);
 
     return(
-        <div className="absolute top-0 w-full flex justify-center">
+        <div className="absolute top-0 w-full flex justify-center z-10">
             <div className="w-4/5 p-4 flex justify-between">
             
                 <Link href="/">

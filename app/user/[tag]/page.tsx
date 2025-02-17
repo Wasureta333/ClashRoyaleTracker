@@ -1,5 +1,8 @@
 "use client"
 import * as React from "react"
+import { RefreshCcw, RotateCcw } from 'lucide-react';
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { motion } from "framer-motion" // Importing Framer Motion
@@ -12,14 +15,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function PlayerProfile() {
   const params = useParams();
+  const { toast } = useToast();
   const [playerMatches, setPlayerMatches] = useState<PlayerMatch[]>([]);
+  const [playerName, setPlayerName] = useState<string | null>(null);
   const [filteredMatches, setFilteredMatches] = useState<PlayerMatch[]>([]);
   const [tag, setTag] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [filter, setFilter] = useState<string>("all"); // State for filtering matches
+
+  const matchCardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.4 },
+    }),
+  };
 
   const getTimeAgo = (battleTime: string) => {
     const battleDate = new Date(
@@ -56,21 +72,27 @@ export default function PlayerProfile() {
 
   const retrievePlayerMatches = async () => {
     if (!tag) return;
-
+  
     try {
       setLoading(true);
-      const response = await fetch(`/api/v1/getPlayerMatches?playerName=${tag}`);
+      const response = await fetch(`/api/v1/getPlayerMatches?playerTag=${tag}`);
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
       setPlayerMatches(data.data);
+  
+      // Supponiamo che il nome sia in data.data[0]?.team[0]?.name
+      if (data.data.length > 0) {
+        setPlayerName(data.data[0]?.team[0]?.name || "Unknown Player");
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     retrievePlayerMatches();
@@ -87,11 +109,34 @@ export default function PlayerProfile() {
   }, [filter, playerMatches]);
 
   return (
-    <div className="w-full">
-      <div className="h-96 w-full overflow-hidden">
-        <Image layout="responsive" alt="banner" width={1} height={1} src="/banner1.png" />
+    <div className="w-full ">
+      <div className="w-full relative">
+        <div className="h-96 w-full overflow-hidden">
+          <Image layout="responsive" alt="banner" width={1} height={1} src="/banner1.png" />
+        </div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-full flex items-end z-9 text-white p-4">
+          <div className="w-full flex justify-between">
+            <div className="font-bold text-7xl">
+              {playerName ? playerName : <Skeleton className="w-48 h-12 bg-gray-700 rounded-md" />}
+            </div>
+            <Button 
+              onClick={() => {
+                retrievePlayerMatches();
+                toast({
+                  title: "Refresh",
+                  description: "The profile has been updated.",
+                  duration: 1500
+                });
+              }}
+              disabled={loading}
+              className="z-10 mt-6 bg-defaultBg2 border border-defaultBg" variant="outline" size="icon">
+              
+              <RefreshCcw />
+            </Button>      
+          </div>
+        </div>
       </div>
-      <div className="container mx-auto p-4 flex justify-center">
+      <div className="z-10 container mx-auto p-4 flex justify-center">
         <div className="w-2/5">Sidebar</div>
         <div className="w-3/5 bg-defaultBg h-full flex flex-col justify-center items-center">
           <div className="w-[98%] flex justify-between items-center">
@@ -115,6 +160,10 @@ export default function PlayerProfile() {
             filteredMatches.map((match, index) => (
               <motion.div
                 key={index}
+                custom={index}
+                variants={matchCardVariants}
+                initial="hidden"
+                animate="visible"
                 className={`bg-defaultBg2 shadow-md rounded-lg mb-3 w-[98%] border-l-2 
                   ${match.opponent[0]?.trophyChange > 0 ? 'border-green-500' : 'border-red-500'} 
                   p-4`}
@@ -123,9 +172,22 @@ export default function PlayerProfile() {
               >
                 <div className="flex justify-between w-full">
                   <div className="text-xs text-gray-400 text-right pl-3 pt-1">
-                    {match.arena.name}
+                    {'League ' + match.leagueNumber}
                   </div>
-                  <div className="text-xs text-gray-400 text-right pr-3 pt-1">
+                  <div className="text-xs text-gray-400 text-right pr-3 pt-1 cursor-pointer"
+                    onMouseEnter={(e) => e.currentTarget.innerText = new Intl.DateTimeFormat('it-IT', { 
+                      year: 'numeric', month: '2-digit', day: '2-digit', 
+                      hour: '2-digit', minute: '2-digit'
+                    }).format(new Date(
+                      Date.UTC(
+                        parseInt(match.battleTime.substring(0, 4)),  
+                        parseInt(match.battleTime.substring(4, 6)) - 1,  
+                        parseInt(match.battleTime.substring(6, 8)),  
+                        parseInt(match.battleTime.substring(9, 11)), 
+                        parseInt(match.battleTime.substring(11, 13))
+                      )
+                    ))}
+                    onMouseLeave={(e) => e.currentTarget.innerText = getTimeAgo(match.battleTime)}>
                     {getTimeAgo(match.battleTime)}
                   </div>
                 </div>
