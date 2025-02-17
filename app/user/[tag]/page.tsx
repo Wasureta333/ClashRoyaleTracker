@@ -89,7 +89,7 @@ export default function PlayerProfile() {
   return (
     <div className="w-full">
       <div className="h-96 w-full overflow-hidden">
-        <Image layout="responsive" alt="banner" width={1} height={1} src="/banner1.jpg" />
+        <Image layout="responsive" alt="banner" width={1} height={1} src="/banner1.png" />
       </div>
       <div className="container mx-auto p-4 flex justify-center">
         <div className="w-2/5">Sidebar</div>
