@@ -6,23 +6,6 @@
   
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #292929; /* Leggermente più chiaro quando si passa sopra */
-}
-
-::-webkit-scrollbar {
-  width: 8px; /* Dimensione della scrollbar */
-}
-
-::-webkit-scrollbar-track {
-  background: transparent; /* Rende lo sfondo trasparente */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #121212; /* Cambia questo colore con il tuo "defaultBg2" */
-  border-radius: 10px; /* Smussa i bordi */
-}
-
 @font-face {
   font-family: 'Axiforma';
   src: url('/fonts/Axiforma-Regular.woff2') format('woff2');
@@ -30,23 +13,18 @@
   font-style: normal;
 }
 
-html {
-  scrollbar-width: thin;
-  scrollbar-color: #1E1E1E transparent;
+@font-face {
+  font-family: 'Axiforma';
+  src: url('/fonts/Axiforma-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Axiforma';
-    src: url('/fonts/Axiforma-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Axiforma';
-    src: url('/fonts/Axiforma-Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
+  font-family: 'Axiforma';
+  src: url('/fonts/Axiforma-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
 }
 
 /* Imposta Axiforma come font globale */
@@ -55,8 +33,26 @@ body {
     color: white;
     background-color: #121212;
     -ms-overflow-style: none;
+    overflow: auto; /* 🔹 Impedisce lo scrolling */
 }
 
+/* ✅ Rimuove completamente la scrollbar */
+html, body { /* 🔹 Nessuno scroll su tutto il sito */
+    scrollbar-width: none; /* 🔹 Nasconde scrollbar in Firefox */
+}
+
+::selection {
+  color: #ef4444;
+  background: white;
+}
+
+/* 🔹 Nasconde la scrollbar nei browser WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* 🔹 Mantiene il supporto per variabili CSS */
 @layer base {
   :root {
         --background: 0 0% 100%;
@@ -132,4 +128,4 @@ body {
   .animate-slide {
     @apply animate-slide animate-duration-700;
   }
-}
+}  
