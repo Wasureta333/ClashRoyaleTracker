@@ -35,6 +35,9 @@ export async function GET(request: Request) {
             best_trophies: data.bestTrophies,
             wins: data.wins,
             losses: data.losses,
+            leagueNumber: data.currentPathOfLegendSeasonResult.leagueNumber,
+            medals: data.currentPathOfLegendSeasonResult.trophies,
+            rank: data.currentPathOfLegendSeasonResult.rank,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         };
@@ -47,8 +50,6 @@ export async function GET(request: Request) {
         if (error) {
             throw new Error(`Errore su Supabase: ${error.message}`);
         }
-
-        console.log(`✅ Profilo sincronizzato: ${data.name}`);
 
         return NextResponse.json({ data }, { status: 200 });
 

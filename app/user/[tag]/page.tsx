@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { RefreshCcw, RotateCcw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react"
@@ -8,6 +8,12 @@ import { useParams } from "next/navigation"
 import { motion } from "framer-motion" // Importing Framer Motion
 import Image from "next/image"
 import { PlayerMatch } from "@/types/PlayerMatches"
+import { PlayerData } from "@/types/PlayerData";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import {
   Select,
   SelectContent,
@@ -15,12 +21,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 
 export default function PlayerProfile() {
   const params = useParams();
   const { toast } = useToast();
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [playerMatches, setPlayerMatches] = useState<PlayerMatch[]>([]);
   const [playerName, setPlayerName] = useState<string | null>(null);
   const [filteredMatches, setFilteredMatches] = useState<PlayerMatch[]>([]);
@@ -51,9 +64,12 @@ export default function PlayerProfile() {
   
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - battleDate.getTime()) / 1000);
-    
-    //fixare: se il match è stato giocato una settimana fa, viene mostrato "1 weeks ago" e non va bene
-    if (diffInSeconds < 3600) {
+  
+    if (diffInSeconds < 10) {
+      return "a few seconds ago"; // 🔥 Nuovo caso per meno di 10 secondi
+    } else if (diffInSeconds < 60) {
+      return `${diffInSeconds} sec ago`; // Mostra i secondi esatti
+    } else if (diffInSeconds < 3600) {
       return `${Math.floor(diffInSeconds / 60)} min ago`;
     } else if (diffInSeconds < 86400) {
       return `${Math.floor(diffInSeconds / 3600)} h ago`;
@@ -92,21 +108,49 @@ export default function PlayerProfile() {
       setLoading(false);
     }
   };
+
+  const retrievePlayerProfile = async () => {
+    if (!tag) return;
+  
+    try {
+      const response = await fetch(`/api/v1/getTagData?playerTag=${tag}`);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      setPlayerData(data.data);
+    } catch (error) {
+      console.error("Error fetching player profile:", error);
+    }
+  };
+  
   
 
   useEffect(() => {
     retrievePlayerMatches();
+    retrievePlayerProfile();
   }, [tag]);
 
   useEffect(() => {
     if (filter === "all") {
       setFilteredMatches([...playerMatches]);
     } else if (filter === "wins") {
-      setFilteredMatches(playerMatches.filter(match => match.opponent[0]?.trophyChange > 0));
-    } else if (filter === "losses") {
       setFilteredMatches(playerMatches.filter(match => match.team[0]?.trophyChange > 0));
+    } else if (filter === "losses") {
+      setFilteredMatches(playerMatches.filter(match => match.opponent[0]?.trophyChange > 0));
     }
   }, [filter, playerMatches]);
+
+  useEffect(() => {
+    if (playerData) {
+      console.log("Campi disponibili in playerData:", Object.keys(playerData));
+    }
+  }, [playerData]);
+  
+
+  console.log("Badges ricevuti:", playerData?.badges);
+  console.log("Badges con icona:", playerData?.badges?.filter(badge => badge.iconUrls?.large));
+  
 
   return (
     <div className="w-full ">
@@ -137,7 +181,39 @@ export default function PlayerProfile() {
         </div>
       </div>
       <div className="z-10 container mx-auto p-4 flex justify-center">
-        <div className="w-2/5">Sidebar</div>
+        <div className="w-2/5">
+          <h2 className="text-xl font-semibold mb-2 ml-auto pr-4 pt-2">Profile info</h2>
+          <div className="w-[98%] bg-defaultBg2 shadow-md rounded-lg mb-3">
+            <Carousel>
+              <CarouselContent>
+                {playerData?.badges && playerData.badges.length > 0 ? (
+                  playerData.badges
+                    .filter(badge => badge.iconUrls?.large)
+                    .map((badge, index) => (
+                      <CarouselItem key={`badge-${index}`} className="sm:basis-1/2 md:basis-1/5 lg:basis-1/5">
+
+                        <div className="flex flex-col items-center">
+                          <Image 
+                            width={64} 
+                            height={64} 
+                            src={badge.iconUrls!.large} 
+                            alt={badge.name} 
+                            style={{ userSelect: "none", pointerEvents: "none"}}
+                            className="w-16 h-16 rounded-md"
+                          />
+                          {/* <p className="text-sm mt-2 text-center" style={{userSelect: "none"}}>{badge.name}</p> */}
+                        </div>
+                      </CarouselItem>
+                    ))
+                ) : (
+                  <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                    <p>No badges available</p>
+                  </CarouselItem>
+                )}
+              </CarouselContent>     {/* ❌ Rimuovi questa riga */}
+            </Carousel>
+          </div>
+        </div>
         <div className="w-3/5 bg-defaultBg h-full flex flex-col justify-center items-center">
           <div className="w-[98%] flex justify-between items-center">
             <Select onValueChange={(value) => setFilter(value)}>
@@ -165,7 +241,7 @@ export default function PlayerProfile() {
                 initial="hidden"
                 animate="visible"
                 className={`bg-defaultBg2 shadow-md rounded-lg mb-3 w-[98%] border-l-2 
-                  ${match.opponent[0]?.trophyChange > 0 ? 'border-green-500' : 'border-red-500'} 
+                  ${match.opponent[0]?.trophyChange > 0 ? 'border-red-500' : 'border-green-500'} 
                   p-4`}
                 whileHover={{ scale: 1.01, boxShadow: "0px 4px 10px rgba(0,0,0,0.15)" }} // Hover Effect
                 transition={{ duration: 0.15 }} // Smooth Animation
@@ -208,7 +284,34 @@ export default function PlayerProfile() {
                     ) : (
                       <h3 className="text-lg font-bold text-green-500">WIN</h3>
                     )}
-                    <h3 className="text-lg font-bold">{match.opponent[0]?.name}</h3>
+
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Link href={playerData?.name ? `/user/${decodeURIComponent(match.opponent[0].tag.replace(/^#/, ''))}` : "#"} passHref>
+                          <h3 className="text-lg font-bold cursor-pointer">
+                            {match.opponent[0]?.name}
+                          </h3>
+                        </Link>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="p-4 bg-defaultBg shadow-lg rounded-lg w-80 border-2 border-mainColor">
+                        <div className="flex justify-between items-start">
+                            <p className="text-lg font-semibold text-white">Rank: <span className="font-normal">502</span></p>
+                            <div className="text-right">
+                                <p className="text-sm text-gray-500">Current Trophies</p>
+                                <div className="flex items-center justify-end gap-2">
+                                  <p className="text-2xl font-bold text-white">2839</p>
+                <                 Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
+                                </div>
+                                <hr className="my-1 border-white"/>
+                                <div className="flex items-center justify-end gap-2">
+                                  <p className="text-2xl font-bold text-white">3020</p>
+                                  <Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
+                                </div>
+                                <p className="text-sm text-gray-500">Best Finish</p>
+                            </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
                   </div>
                 </div>
 

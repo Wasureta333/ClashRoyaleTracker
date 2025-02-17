@@ -42,7 +42,7 @@ html, body { /* 🔹 Nessuno scroll su tutto il sito */
 }
 
 ::selection {
-  color: #ef4444;
+  color: #161616;
   background: white;
 }
 

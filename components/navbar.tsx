@@ -60,7 +60,7 @@ export function Navbar() {
         } else {
             setApiSuccess(false);
         }
-      }, [tag, retrievePlayerData]);
+      }, [tag]);
 
     return(
         <div className="absolute top-0 w-full flex justify-center z-10">
@@ -90,7 +90,7 @@ export function Navbar() {
                             <Input
                                 type="text"
                                 value={tag}
-                                maxLength={8}
+                                maxLength={9}
                                 onChange={handleChange}
                                 placeholder="Insert a TAG..."
                                 className="pl-8"
@@ -108,7 +108,7 @@ export function Navbar() {
                                 whileHover={{ scale: 1.015 }}
                                 whileTap={{ scale: 0.99 }}
                                 className="w-full">
-                            <Link href={playerData?.name ? `/user/${encodeURIComponent(playerData.name)}` : "#"} passHref onClick={() => handleDialogClose(false)}>
+                            <Link href={playerData?.name ? `/user/${encodeURIComponent(tag)}` : "#"} passHref onClick={() => handleDialogClose(false)}>
                             <Button className="mt-0 w-full h-14 text-white flex justify-between items-center px-4 shadow-none hover:shadow-md transition-all">
                                 {/* Sinistra: Nome e Livello */}
                                 <div className="text-left space-x-2">
