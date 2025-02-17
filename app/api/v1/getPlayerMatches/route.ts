@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 
-export async function GET(request) {
-        //const { searchParams } = new URL(request.url);
-        //const playerTag = searchParams.get("playerTag")?.toUpperCase();
-        const playerTag = 'R89UG2G';
+export async function GET(request: Request) {    
+        //const playerTag = 'R89UG2G';
+        const { searchParams } = new URL(request.url);
+        const playerTagRaw = searchParams.get('playerTag');
+
+        if (!playerTagRaw) {
+            return new Response(JSON.stringify({ error: "Il parametro 'playerTag' è obbligatorio." }), { status: 400 });
+        }
+
+        const playerTag = playerTagRaw.toUpperCase();
+        console.log(playerTag);
+
         const url = `https://api.clashroyale.com/v1/players/${encodeURIComponent(`#${playerTag}`)}/battlelog`;
         const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
