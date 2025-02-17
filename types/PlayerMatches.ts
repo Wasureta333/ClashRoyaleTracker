@@ -20,6 +20,7 @@ export interface Player {
   tag: string;
   name: string;
   crowns: number;
+  trophyChange: number;
   kingTowerHitPoints: number | null;
   princessTowersHitPoints: number[] | null;
   cards: Card[];
