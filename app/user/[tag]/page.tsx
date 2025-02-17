@@ -195,7 +195,7 @@ export default function PlayerProfile() {
                 <div className="flex justify-between w-full">
                   <div className="flex items-center gap-2 pl-3 pt-3 pb-2 max-h-0.5">
                     <h3 className="text-lg font-bold">{match.team[0]?.name}</h3>
-                    {match.opponent[0]?.trophyChange > 0 ? (
+                    {match.team[0]?.trophyChange > 0 ? (
                       <h3 className="text-lg font-bold text-green-500">WIN</h3>
                     ) : (
                       <h3 className="text-lg font-bold text-red-500">LOSE</h3>
@@ -203,7 +203,7 @@ export default function PlayerProfile() {
                   </div>
 
                   <div className="flex items-center gap-2 pr-3 pt-3 pb-0 max-h-0.5">
-                    {match.opponent[0]?.trophyChange > 0 ? (
+                    {match.opponent[0]?.trophyChange == null ? (
                       <h3 className="text-lg font-bold text-red-500">LOSE</h3>
                     ) : (
                       <h3 className="text-lg font-bold text-green-500">WIN</h3>
