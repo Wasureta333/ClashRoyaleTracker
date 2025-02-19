@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { motion } from "framer-motion" // Importing Framer Motion
 import Image from "next/image"
+import { Card } from "@/types/PlayerMatches";
 import { PlayerMatch } from "@/types/PlayerMatches"
 import { PlayerData } from "@/types/PlayerData";
 import {
@@ -124,8 +125,6 @@ export default function PlayerProfile() {
     }
   };
   
-  
-
   useEffect(() => {
     retrievePlayerMatches();
     retrievePlayerProfile();
@@ -151,7 +150,6 @@ export default function PlayerProfile() {
   console.log("Badges ricevuti:", playerData?.badges);
   console.log("Badges con icona:", playerData?.badges?.filter(badge => badge.iconUrls?.large));
   
-
   return (
     <div className="w-full ">
       <div className="w-full relative">
@@ -316,13 +314,13 @@ export default function PlayerProfile() {
                 </div>
 
                 <div className="flex justify-between">
-                  <div className="grid grid-cols-4 w-[35%]">
+                    <div className="grid grid-cols-4 w-[35%]">
                     {match.team[0]?.cards?.map((card) => (
                       <div key={card.id} className="flex flex-col items-center">
                         <Image
                           width={90}
                           height={90}
-                          src={card.iconUrls.medium}
+                          src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
                           alt={card.name}
                           className="w-12 h-16"
                         />
@@ -332,10 +330,10 @@ export default function PlayerProfile() {
                   <div className="mt-0 grid grid-cols-4 w-[35%]">
                     {match.opponent[0]?.cards?.map((card) => (
                       <div key={card.id} className="flex flex-col items-center gap-0 space-x-0">
-                        <Image
+                         <Image
                           width={90}
                           height={90}
-                          src={card.iconUrls.medium}
+                          src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
                           alt={card.name}
                           className="w-12 h-16"
                         />
