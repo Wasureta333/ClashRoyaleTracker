@@ -16,8 +16,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
 ## Api
 
 Since the project hasn't been deployed yet, the api requests are socketed to a single IP (mine lol). Feel free to contact me if you want a cr api pipeline
