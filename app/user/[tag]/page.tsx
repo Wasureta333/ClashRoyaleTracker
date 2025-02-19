@@ -7,7 +7,6 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { motion } from "framer-motion" // Importing Framer Motion
 import Image from "next/image"
-import { Card } from "@/types/PlayerMatches";
 import { PlayerMatch } from "@/types/PlayerMatches"
 import { PlayerData } from "@/types/PlayerData";
 import {

@@ -65,13 +65,27 @@ export function Navbar() {
     return(
         <div className="absolute top-0 w-full flex justify-center z-10">
             <div className="w-4/5 p-4 flex justify-between">
-            
-                <Link href="/">
-                    <span className="text-2xl font-semibold text-mainColor">
-                        Royale Tracker
-                    </span>
-                </Link>
+                <div className="w-1/2">
+                    <Link href="/">
+                        <span className="text-2xl font-semibold text-mainColor">
+                            Royale Tracker
+                        </span>
+                    </Link>
+                </div>
 
+                <div className="w-1/2 flex justify-end">
+                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
+                    Profile
+                </Link>
+                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
+                    Clans
+                </Link>
+                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
+                    Decks
+                </Link>
+                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
+                    Cards
+                </Link>
                 <Dialog open={isDialogOpen} onOpenChange={handleDialogClose} >
                     <DialogTrigger className="text-white md:hover:text-mainColor transition-all ">
                         Search
@@ -96,9 +110,6 @@ export function Navbar() {
                                 className="pl-8"
                             />
                         </div>
-                        
-
-                        
                         {apiSuccess && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.8 }}
@@ -134,7 +145,7 @@ export function Navbar() {
                         )}
                     </DialogContent>
                 </Dialog>
+                </div>
             </div>
-
         </div>)
 }
