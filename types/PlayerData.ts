@@ -1,4 +1,5 @@
 export interface PlayerData {
+    tag: string;
     name: string;
     expLevel: number;
     trophies: number;

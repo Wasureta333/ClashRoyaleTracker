@@ -15,16 +15,54 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { PlayerData } from "@/types/PlayerData";
 
+
 export function Navbar() {
     const [tag, setTag] = useState("");
     const [playerData, setPlayerData] = useState<PlayerData|null>(null);
     const [apiSuccess, setApiSuccess] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [finalTag, setFinalTag] = useState<string | null>(null);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTag = e.target.value.toUpperCase();
         setTag(newTag);
+    
+        try {
+            let updatedTag = newTag;
+        
+            // 🔎 Se l'utente inserisce un nome anziché un tag
+            if (isNaN(Number(newTag))) {
+                const response = await fetch(`/api/v1/searchProfiles?playerName=${newTag}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    updatedTag = data.player_tag; // 🎯 Usa il tag trovato
+                    setFinalTag(updatedTag);      // ✅ Salva finalTag nello stato
+                } else {
+                    console.error("Nessun profilo trovato per il nome:", newTag);
+                    setApiSuccess(false);
+                    return;
+                }
+            } else {
+                setFinalTag(updatedTag);          // ✅ Se è già un tag, salvalo comunque
+            }
+        
+            // 🔗 Ora esegue la chiamata con il player_tag corretto
+            const response = await fetch(`/api/v1/getTagData?playerTag=${updatedTag}`);
+            if (response.ok) {
+                const dataPlayer = await response.json();
+                setPlayerData(dataPlayer.data);
+                setApiSuccess(true);
+            } else {
+                setApiSuccess(false);
+            }
+        } catch (error) {
+            console.error("Errore durante il recupero del profilo:", error);
+            setApiSuccess(false);
+        }
+        
     };
+    
 
     const handleDialogClose = (isOpen: boolean) => {
         setIsDialogOpen(isOpen);
@@ -107,8 +145,7 @@ export function Navbar() {
                                 maxLength={9}
                                 onChange={handleChange}
                                 placeholder="Insert a TAG..."
-                                className="pl-8"
-                            />
+                                className="pl-8"/>
                         </div>
                         {apiSuccess && (
                             <motion.div
@@ -119,7 +156,10 @@ export function Navbar() {
                                 whileHover={{ scale: 1.015 }}
                                 whileTap={{ scale: 0.99 }}
                                 className="w-full">
-                            <Link href={playerData?.name ? `/user/${encodeURIComponent(tag)}` : "#"} passHref onClick={() => handleDialogClose(false)}>
+                            <Link 
+                                href={finalTag ? `/user/${encodeURIComponent(finalTag)}` : `/user/${encodeURIComponent(tag)}`} 
+                                passHref 
+                                onClick={() => handleDialogClose(false)}>
                             <Button className="mt-0 w-full h-14 text-white flex justify-between items-center px-4 shadow-none hover:shadow-md transition-all">
                                 {/* Sinistra: Nome e Livello */}
                                 <div className="text-left space-x-2">
@@ -137,11 +177,6 @@ export function Navbar() {
                             </Button>
                             </Link>    
                         </motion.div>
-                        )}
-                        {!apiSuccess && (
-                            <div className="text-right">
-                                    <span className="font-semibold">R89UG2G</span>
-                            </div>
                         )}
                     </DialogContent>
                 </Dialog>
