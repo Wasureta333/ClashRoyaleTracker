@@ -68,7 +68,7 @@ export default function PlayerProfile() {
       className: "top-right-toast",
     });
   
-    setTimeout(() => setRefreshDisabled(false), 300000);
+    setTimeout(() => setRefreshDisabled(false), 12000);
   };
   
   //function which fluidly loads the matches of the player from the API.
@@ -162,7 +162,7 @@ export default function PlayerProfile() {
 
   // Function which randomizes the banner each time the page loads.
   useEffect(() => {
-    const banners = ["/banner1.png", "/banner5.jpg", "/banner3.jpg"];
+    const banners = ["/banner1.png", "/banner5.jpg", "/banner7.jpeg", "/banner3.jpg"];
     const randomBanner = banners[Math.floor(Math.random() * banners.length)];
     setBannerSrc(randomBanner);
     console.log(setBannerSrc)
@@ -195,7 +195,7 @@ export default function PlayerProfile() {
     <div className="w-full ">
       <div className="w-full relative">
         <div className="h-96 w-full overflow-hidden">
-          <Image layout="responsive" alt="banner" width={1} height={1} src={bannerSrc} />
+          <Image layout="responsive" alt="banner" width={1} height={1} src={bannerSrc}/>
         </div>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-full flex items-end z-9 text-white p-4">
           <div className="w-full flex justify-between">

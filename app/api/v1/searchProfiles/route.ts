@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
         .from("profiles")
         .select("player_tag")
-        .ilike("name", `%${playerName}%`) // 🔎 Cerca per nome (case-insensitive)
+        .ilike("name", `%${playerName}%`)
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
