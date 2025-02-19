@@ -7,6 +7,10 @@ If you'd like to checkout the project before deployment OR you are working on it
 + Supabase ( npm install @supabase/supabase-js )
 + Embla Carousel ( npm install embla-carousel-react )
 
+## Api
+
+Since the project hasn't been deployed yet, the api requests are socketed to a single IP (mine lol). Feel free to contact me if you want a cr api pipeline
+
 
 ## Getting Started
 
@@ -16,6 +20,3 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Api
-
-Since the project hasn't been deployed yet, the api requests are socketed to a single IP (mine lol). Feel free to contact me if you want a cr api pipeline
