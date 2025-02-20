@@ -32,8 +32,11 @@ import Link from "next/link";
 // #endregion
 export default function PlayerProfile() {
   // #region constants
+  const [allTimeStats, setAllTimeStats] = useState<{ total: number; wins: number; losses: number; winrate: number } | null>(null);
   const params = useParams();
   const { toast } = useToast();
+  const tabs = ["ALL TIME", "LAST GAMES", "THIS SEASON"];
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [bannerSrc, setBannerSrc] = useState("/banner1.png"); // state for storing the banner image source
   const [playerData, setPlayerData] = useState<PlayerData | null>(null); // state for storing the player data
   const [playerMatches, setPlayerMatches] = useState<PlayerMatch[]>([]); // state for storing the player matches
@@ -151,6 +154,23 @@ export default function PlayerProfile() {
       setLoading(false);
     }
   };
+
+  //function to retrieve all time stats from the DB
+  const retrieveAllTimeStats = async () => {
+    if (!tag) return;
+  
+    try {
+      const response = await fetch(`/api/v1/getAllTimeStats?playerTag=${tag}`);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      setAllTimeStats(data); 
+    } catch (error) {
+      console.error("Error fetching all-time stats:", error);
+    }
+  };
+  
   // #endregion
 
   // #region effects
@@ -171,6 +191,7 @@ export default function PlayerProfile() {
   useEffect(() => {
     retrievePlayerMatches();
     retrievePlayerProfile();
+    retrieveAllTimeStats();
   }, [tag]);
 
   useEffect(() => {
@@ -219,36 +240,83 @@ export default function PlayerProfile() {
         <div className="w-2/5">
           <h2 className="text-xl font-semibold mb-2 ml-auto pr-4 pt-2">Profile info</h2>
           <div className="w-[98%] bg-defaultBg2 shadow-md rounded-lg mb-3">
-            <Carousel>
-              <CarouselContent>
-                {playerData?.badges && playerData.badges.length > 0 ? (
-                  playerData.badges
-                    .filter(badge => badge.iconUrls?.large)
-                    .map((badge, index) => (
-                      <CarouselItem key={`badge-${index}`} className="sm:basis-1/2 md:basis-1/5 lg:basis-1/5">
-
-                        <div className="flex flex-col items-center">
-                          <Image 
-                            width={64} 
-                            height={64} 
-                            src={badge.iconUrls!.large} 
-                            alt={badge.name} 
-                            style={{ userSelect: "none", pointerEvents: "none"}}
-                            className="w-16 h-16 rounded-md"
-                          />
-                          {/* <p className="text-sm mt-2 text-center" style={{userSelect: "none"}}>{badge.name}</p> */}
-                        </div>
-                      </CarouselItem>
-                    ))
-                ) : (
-                  <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                    <p>No badges available</p>
-                  </CarouselItem>
-                )}
-              </CarouselContent>     {/* ❌ Rimuovi questa riga */}
-            </Carousel>
+          <div className="relative flex ">
+        {tabs.map((tab) => (
+          <button
+          key={tab}
+          onClick={() => {
+            setActiveTab(tab);
+            if (tab === "ALL TIME") retrieveAllTimeStats(); // 🔥 Recupera dati quando clicchi su ALL TIME
+          }}
+          className={`relative px-4 py-2 text-lg transition-colors duration-300 focus:outline-none ${
+            activeTab === tab ? "text-defaultWhite text-sm font-bold" : "text-gray-400 text-sm font-bold hover:text-defaultWhite"
+          }`}
+        >
+          {tab}
+          {activeTab === tab && (
+            <motion.div
+              layoutId="underline"
+              className="absolute left-0 right-0 bottom-0 h-[2px] bg-[#EF4444]"
+              transition={{ type: "spring", duration: 0.2, ease: "easeInOut" }}
+            />
+          )}
+        </button>
+        
+        ))}
           </div>
+      <motion.div layout transition={{ type: "spring", stiffness: 300, damping: 30 }}>
+        <div className="p-5 text-left text-gray-700 bg-defaultBg2 rounded-b-lg shadow">
+        <h2 className="text-xl font-semibold">{activeTab} Content</h2>
+        <div className="p-5 text-left text-gray-700 bg-defaultBg2 rounded-b-lg shadow">
+          {activeTab === "ALL TIME" ? (
+            allTimeStats ? (
+              <div>
+                <h2 className="text-xl font-semibold mb-3">All Time Statistics</h2>
+                <p>Total Matches: <strong>{allTimeStats.total}</strong></p>
+                <p>Wins: <strong>{allTimeStats.wins}</strong></p>
+                <p>Losses: <strong>{allTimeStats.losses}</strong></p>
+                <p>Winrate: <strong>{allTimeStats.winrate.toFixed(2)}%</strong></p>
+              </div>
+            ) : (
+              <p>Loading all-time statistics...</p>
+            )
+          ) : (
+            <p className="mt-2">Qui va il contenuto per <strong>{activeTab}</strong>.</p>
+          )}
         </div>
+        </div>
+        <Carousel>
+            <CarouselContent>
+              {playerData?.badges && playerData.badges.length > 0 ? (
+                playerData.badges
+                  .filter(badge => badge.iconUrls?.large)
+                  .map((badge, index) => (
+                    <CarouselItem key={`badge-${index}`} className="sm:basis-1/2 md:basis-1/5 lg:basis-1/5">
+
+                      <div className="flex flex-col items-center">
+                        <Image 
+                          width={64} 
+                          height={64} 
+                          src={badge.iconUrls!.large} 
+                          alt={badge.name} 
+                          style={{ userSelect: "none", pointerEvents: "none"}}
+                          className="w-16 h-16 rounded-md"
+                        />
+                        {/* <p className="text-sm mt-2 text-center" style={{userSelect: "none"}}>{badge.name}</p> */}
+                      </div>
+                    </CarouselItem>
+                  ))
+              ) : (
+                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                  <p>No badges available</p>
+                </CarouselItem>
+              )}
+            </CarouselContent>     {/* ❌ Rimuovi questa riga */}
+        </Carousel>
+      </motion.div>
+      
+      </div>
+    </div> 
         <div className="w-3/5 bg-defaultBg h-full flex flex-col justify-center items-center">
           <div className="w-[98%] flex justify-between items-center gap-2">
             <Select onValueChange={(value) => {

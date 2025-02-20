@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input" 
 import { Button } from "@/components/ui/button";
+import { User } from "lucide-react"
 import { PlayerData } from "@/types/PlayerData";
 
 
@@ -113,9 +114,6 @@ export function Navbar() {
 
                 <div className="w-1/2 flex justify-end">
                 <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
-                    Profile
-                </Link>
-                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
                     Clans
                 </Link>
                 <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
@@ -125,7 +123,7 @@ export function Navbar() {
                     Cards
                 </Link>
                 <Dialog open={isDialogOpen} onOpenChange={handleDialogClose} >
-                    <DialogTrigger className="text-white md:hover:text-mainColor transition-all ">
+                    <DialogTrigger className="pr-8 text-white md:hover:text-mainColor transition-all ">
                         Search
                     </DialogTrigger>
 
@@ -180,6 +178,9 @@ export function Navbar() {
                         )}
                     </DialogContent>
                 </Dialog>
+                <Link href="" className="pr-8 pt-1 text-white md:hover:text-mainColor transition-all">
+                    Profile
+                </Link>
                 </div>
             </div>
         </div>)
