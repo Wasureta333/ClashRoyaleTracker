@@ -2,13 +2,14 @@ from supabase import create_client, Client
 import requests
 import time
 
-# Configurazione Supabase
+ #region Configurazione Supabase
 SUPABASE_URL = 'https://xdgduhjdwazviraadyja.supabase.co'
 SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkZ2R1aGpkd2F6dmlyYWFkeWphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3ODYyNTEsImV4cCI6MjA1NTM2MjI1MX0.TQSHFCQIdimQt3mOeBPea1BqPy0Ywli1fxrVXg537AU'
-API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImY3NGJhNzUwLWFjY2ItNDdlMC04MWJjLTIyMGQ0NDQzMTc3OSIsImlhdCI6MTczOTc4MzY3OSwic3ViIjoiZGV2ZWxvcGVyL2E0ZDZjNzUyLTUwMmMtOGE0Yi1iMDc5LWYxMmM1Yjk1YmM0NyIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIyMTMuMjE1LjE2My4xODYiXSwidHlwZSI6ImNsaWVudCJ9XX0.w2ixjEWJ6TOGvGtLZVNUx3RNeCQHpCPX8G79D15pll2apxd7p4EV3YnA6QbaF93G7vTtuxX-sh91nznKwbS8lw'
+API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjQzMjQyNjRkLTU2MDAtNDg2MS05NDY2LWM4Mzg2MzM2MmRiOSIsImlhdCI6MTczOTQ4MTk2Niwic3ViIjoiZGV2ZWxvcGVyL2E0ZDZjNzUyLTUwMmMtOGE0Yi1iMDc5LWYxMmM1Yjk1YmM0NyIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyI0Ni4xMDIuNjQuNzQiXSwidHlwZSI6ImNsaWVudCJ9XX0.QohLou7RpYu2y0unotliB4AyLrNTmFVnVA48LEAF7cAeu5P4J-kXX8D5ZDGBfqaPL6BKK1u8e9Uk6BsVYqDq4w'
 
-# Inizializzazione client Supabase
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+#endregion
 
 # Headers per Clash Royale API
 headers = {
@@ -16,7 +17,6 @@ headers = {
     'Accept': 'application/json'
 }
 
-# Recupera i profili dei giocatori
 profiles_response = supabase.table('profiles').select('player_tag').execute()
 profiles = profiles_response.data
 
@@ -24,7 +24,6 @@ if not profiles:
     print("⚠️ Nessun profilo trovato in 'profiles'.")
     exit()
 
-# 🔥 Recupero unico dei match esistenti per ottimizzare il controllo
 existing_matches = supabase.table('matches') \
     .select('battletime, player_tag') \
     .in_('player_tag', [p["player_tag"] for p in profiles]) \

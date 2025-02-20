@@ -128,4 +128,44 @@ html, body { /* 🔹 Nessuno scroll su tutto il sito */
   .animate-slide {
     @apply animate-slide animate-duration-700;
   }
-}  
+}
+
+/* Aggiungi questo CSS per il toaster animato in alto a destra */
+.top-right-toast {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 300px !important;          /* 🎯 Larghezza più compatta */
+  z-index: 1000 !important;
+  border-color: #161616;
+  border-radius: 12px !important;   /* 🔄 Angoli arrotondati */
+  box-shadow: 0px 4px 12px rgba(18, 18, 18, 0.15) !important; /* 🌟 Ombra soft */
+  padding: 16px !important;
+  background-color: #161616 !important; /* 🌌 Colore scuro per contrasto */
+  color: #FFFFFF !important;
+  animation: fadeInUp 0.5s ease, fadeOutDown 0.5s ease 2.5s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+
