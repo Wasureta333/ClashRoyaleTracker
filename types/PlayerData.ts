@@ -7,7 +7,7 @@ export interface PlayerData {
     losses: number;
     battleCount: number;
     badges: Badge[];
-    currentPathOfLegendSeasonResult: currentPathOfLegendSeasonResult[];
+    currentPathOfLegendSeasonResult?: currentPathOfLegendSeasonResult[];
 }
 
 export interface currentPathOfLegendSeasonResult {

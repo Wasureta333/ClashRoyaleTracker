@@ -35,9 +35,9 @@ export async function GET(request: Request) {
             best_trophies: data.bestTrophies,
             wins: data.wins,
             losses: data.losses,
-            leagueNumber: data.currentPathOfLegendSeasonResult.leagueNumber,
-            medals: data.currentPathOfLegendSeasonResult.trophies,
-            rank: data.currentPathOfLegendSeasonResult.rank,
+            leagueNumber: data.currentPathOfLegendSeasonResult?.leagueNumber ?? 0,
+            medals: data.currentPathOfLegendSeasonResult?.trophies ?? 0,
+            rank: data.currentPathOfLegendSeasonResult?.rank  ?? 0,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         };
