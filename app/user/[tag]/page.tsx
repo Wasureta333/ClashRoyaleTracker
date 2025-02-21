@@ -10,6 +10,7 @@ import { motion } from "framer-motion" // Importing Framer Motion
 import Image from "next/image"
 import { PlayerMatch } from "@/types/PlayerMatches"
 import { PlayerData } from "@/types/PlayerData";
+import MatchComponent from "@/components/MatchComponent";
 import {
   HoverCard,
   HoverCardContent,
@@ -29,6 +30,200 @@ import {
 } from "@/components/ui/carousel"
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { ChevronDown, ChevronUp } from "lucide-react";
+
+function MatchCard({ index, match, playerData }){
+  const [isOpen, setIsOpen] = useState(false)
+    //function which fluidly loads the matches of the player from the API.
+  const matchCardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.4 },
+    }),
+  };
+
+  //function to calculate how much time ago the match was played. This function uses the battle time provided by the API.
+  const getTimeAgo = (battleTime: string) => {
+    const battleDate = new Date(
+      Date.UTC(
+        parseInt(battleTime.substring(0, 4)), // Anno
+        parseInt(battleTime.substring(4, 6)) - 1, // Mese (JavaScript usa 0-based)
+        parseInt(battleTime.substring(6, 8)), // Giorno
+        parseInt(battleTime.substring(9, 11)), // Ora
+        parseInt(battleTime.substring(11, 13)), // Minuti
+        parseInt(battleTime.substring(13, 15)) // Secondi
+      )
+    )};
+
+  return(
+    <motion.div
+      key={index}
+      custom={index}
+      variants={matchCardVariants}
+      initial="hidden"
+      animate="visible"
+      onClick={()=>{setIsOpen(!isOpen)}}
+      className={`z-10 bg-defaultBg2 rounded-lg mb-3 w-[98%] border-l-2 hover:border-l-8 transition-all cursor-pointer
+        ${match.team[0]?.crowns < match.opponent[0]?.crowns ? 'border-red-500' : match.team[0]?.crowns > match.opponent[0]?.crowns ? 'border-green-500' : 'border-gray-300'} 
+        p-4`}
+      // whileHover={{ scale: 1.01, boxShadow: "0px 4px 10px rgba(0,0,0,0.15)" }} // Hover Effect
+      transition={{ duration: 0.15 }} // Smooth Animation
+    >
+      <div className="flex justify-between w-full ">
+        <div className="text-xs text-gray-400 text-right pl-3 pt-1">
+          {match.leagueNumber === 10 ? 'Legendary Arena' : match.type == "PvP"? "Standard" : match.type == "friendly"? "Custom" : match.type == "pathOfLegend"? "League " + match.leagueNumber : match.type == "clanMate"? "Clan Match" : match.type}
+        </div>
+        <div className="text-xs text-gray-400 text-right pr-3 pt-1 cursor-pointer"
+          onMouseEnter={(e) => e.currentTarget.innerText = new Intl.DateTimeFormat('it-IT', { 
+            year: 'numeric', month: '2-digit', day: '2-digit', 
+            hour: '2-digit', minute: '2-digit'
+          }).format(new Date(
+            Date.UTC(
+              parseInt(match.battleTime.substring(0, 4)),  
+              parseInt(match.battleTime.substring(4, 6)) - 1,  
+              parseInt(match.battleTime.substring(6, 8)),  
+              parseInt(match.battleTime.substring(9, 11)), 
+              parseInt(match.battleTime.substring(11, 13))
+            )
+          ))}
+          //onMouseLeave={(e) => e.currentTarget.innerText = getTimeAgo(match.battleTime)}
+          >
+          {/* {getTimeAgo(match.battleTime)} */}
+        </div>
+      </div>
+      <div className="relative flex justify-between w-full h-[25px]">
+        <div className="flex items-center gap-2 pl-3 pt-3 pb-2 max-h-0.5">
+          {match.team[0]?.crowns > match.opponent[0]?.crowns ? (
+                <h3 className="text-lg font-bold text-green-500">Victory</h3>
+              ) : match.team[0]?.crowns < match.opponent[0]?.crowns ? (
+                <h3 className="text-lg font-bold text-red-500">Defeat</h3>
+              ) : (
+                <h3 className="text-lg font-bold text-gray-300">Draw</h3>
+              )
+              }
+            
+
+          {/* {match.team[0]?.crowns > match.opponent[0]?.crowns ? (
+            <div className="text-2xl font-bold px-2">{match.team[0].crowns + " - " + match.opponent[0].crowns}</div>
+          ) : (
+            <div className="text-2xl font-bold px-2">{match.team[0].crowns + " - " + match.opponent[0].crowns}</div>
+          )} */}
+        </div>
+        
+        <div className="absolute flex w-full justify-between items-center h-[30px]">
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center max-h-0.5">
+            <Image src="https://cdn.royaleapi.com/static/img/ui/crown-blue.png?t=5fe83973c" alt="" className="w-6 h-6 pt-1.5" width={128} height={128} />
+              
+              {match.team[0]?.crowns > match.opponent[0]?.crowns ? (
+                <div className="text-2xl font-bold px-2 text-green-500">{match.team[0].crowns + " - " + match.opponent[0].crowns}</div>
+              ) : match.team[0]?.crowns < match.opponent[0]?.crowns ? (
+                <div className="text-2xl font-bold px-2 text-red-500">{match.team[0].crowns + " - " + match.opponent[0].crowns}</div>
+              ) : (
+                <div className="text-2xl font-bold px-2 text-gray-300">{match.team[0].crowns + " - " + match.opponent[0].crowns}</div>
+              )
+              }
+            <Image src="https://cdn.royaleapi.com/static/img/ui/crown-red.png?t=5fe83973c" alt="" className="w-6 h-6 pt-1.5" width={128} height={128} />
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 pr-3 pt-3 pb-0 max-h-0.5">
+          {/* {match.team[0]?.crowns < match.opponent[0]?.crowns ? (
+            <h3 className="text-lg font-bold text-green-500">WIN</h3>
+          ) : (
+            <h3 className="text-lg font-bold text-red-500">LOSE</h3>
+          )} */}
+          <HoverCard >
+            <HoverCardTrigger>
+              <Link className="" onClick={(e) => e.stopPropagation()} href={playerData?.name ? `/user/${decodeURIComponent(match.opponent[0].tag.replace(/^#/, ''))}` : "#"} passHref>
+                <h3 className="text-lg font-bold cursor-pointer">
+                  {match.opponent[0]?.name}
+                </h3>
+              </Link>
+            </HoverCardTrigger>
+            <HoverCardContent className="p-4 bg-defaultBg shadow-lg rounded-lg w-80 border-2 border-mainColor">
+              <div className="flex justify-between items-start">
+                  <p className="text-lg font-semibold text-white">Rank: <span className="font-normal">502</span></p>
+                  <div className="text-right">
+                      <p className="text-sm text-gray-500">Current Trophies</p>
+                      <div className="flex items-center justify-end gap-2">
+                        <p className="text-2xl font-bold text-white">2839</p>
+      <                 Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
+                      </div>
+                      <hr className="my-1 border-white"/>
+                      <div className="flex items-center justify-end gap-2">
+                        <p className="text-2xl font-bold text-white">3020</p>
+                        <Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
+                      </div>
+                      <p className="text-sm text-gray-500">Best Finish</p>
+                  </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+        </div>
+      </div>
+      {/* <MatchComponent 
+        key={match.team[0].tag + match.opponent[0].tag + match.battleTime}
+        match={match}
+        /> */}
+    
+        <div>
+          <motion.div
+            key={isOpen ? "cards" : "score"}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {isOpen && (
+              <div className="flex justify-between pt-1">
+                <div className="grid grid-cols-4 w-[35%]">
+                  {match.team[0]?.cards?.map((card) => (
+                    <div key={card.id} className="flex flex-col items-center">
+                        <Link onClick={(e) => e.stopPropagation()} href={card.name ? { pathname: `/card/${encodeURIComponent(card.name)}`, query: {
+                                  imageUrl: card.evolutionLevel === 1
+                                  ? card.iconUrls.evolutionMedium
+                                  : card.iconUrls.medium,},}   : "#"}>
+                              <Image
+                                width={90}
+                                height={90}
+                                src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
+                                alt={card.name}
+                            className="w-12 h-16"/>
+                        </Link>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-0 grid grid-cols-4 w-[35%]">
+                  {match.opponent[0]?.cards?.map((card) => (
+                    <div key={card.id} className="flex flex-col items-center gap-0 space-x-0">
+                      <Link href={card.name ? { pathname: `/card/${encodeURIComponent(card.name)}`, query: {
+                                  imageUrl: card.evolutionLevel === 1
+                                  ? card.iconUrls.evolutionMedium
+                                  : card.iconUrls.medium,},}   : "#"}>
+                              <Image
+                                width={90}
+                                height={90}
+                                src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
+                                alt={card.name}
+                            className="w-12 h-16"/>
+                        </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+
+          <div className="flex justify-center pt-2">
+              {!isOpen ? <ChevronDown className="text-gray-700 group-hover:text-red-500" /> : <ChevronUp size={3} className="text-current group-hover:text-red-500" />}
+          </div>
+        </div>
+      </motion.div>
+    )
+
+}
+
 // #endregion
 export default function PlayerProfile() {
   // #region constants
@@ -50,6 +245,18 @@ export default function PlayerProfile() {
   // #endregion
 
   // #region functions
+  const getTimeAgo = (battleTime: string) => {
+    const battleDate = new Date(
+      Date.UTC(
+        parseInt(battleTime.substring(0, 4)), // Anno
+        parseInt(battleTime.substring(4, 6)) - 1, // Mese (JavaScript usa 0-based)
+        parseInt(battleTime.substring(6, 8)), // Giorno
+        parseInt(battleTime.substring(9, 11)), // Ora
+        parseInt(battleTime.substring(11, 13)), // Minuti
+        parseInt(battleTime.substring(13, 15)) // Secondi
+      )
+    );
+
   const handleRefresh = async () => {
     if (refreshDisabled) return;
   
@@ -74,29 +281,7 @@ export default function PlayerProfile() {
     setTimeout(() => setRefreshDisabled(false), 12000);
   };
   
-  //function which fluidly loads the matches of the player from the API.
-  const matchCardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1, duration: 0.4 },
-    }),
-  };
 
-  //function to calculate how much time ago the match was played. This function uses the battle time provided by the API.
-  const getTimeAgo = (battleTime: string) => {
-    const battleDate = new Date(
-      Date.UTC(
-        parseInt(battleTime.substring(0, 4)), // Anno
-        parseInt(battleTime.substring(4, 6)) - 1, // Mese (JavaScript usa 0-based)
-        parseInt(battleTime.substring(6, 8)), // Giorno
-        parseInt(battleTime.substring(9, 11)), // Ora
-        parseInt(battleTime.substring(11, 13)), // Minuti
-        parseInt(battleTime.substring(13, 15)) // Secondi
-      )
-    );
-  
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - battleDate.getTime()) / 1000);
   
@@ -224,7 +409,7 @@ export default function PlayerProfile() {
               {playerName ? playerName : <Skeleton className="w-48 h-12 bg-gray-700 rounded-md" />}
             </div>
             <Button
-                onClick={handleRefresh}
+                // onClick={handleRefresh}
                 disabled={loading || refreshDisabled} // 🔒 Disabilita se loading o refresh bloccato
                 className={`z-10 mt-6 bg-defaultBg2 border border-defaultBg ${
                   refreshDisabled ? "opacity-50 cursor-not-allowed" : ""
@@ -351,126 +536,7 @@ export default function PlayerProfile() {
             <p className="pt-4 text-left">No matches found.</p>
           ) : (
             filteredMatches.map((match, index) => (
-              <motion.div
-                key={index}
-                custom={index}
-                variants={matchCardVariants}
-                initial="hidden"
-                animate="visible"
-                className={`bg-defaultBg2 shadow-md rounded-lg mb-3 w-[98%] border-l-2 
-                  ${match.team[0]?.crowns < match.opponent[0]?.crowns ? 'border-red-500' : 'border-green-500'} 
-                  p-4`}
-                whileHover={{ scale: 1.01, boxShadow: "0px 4px 10px rgba(0,0,0,0.15)" }} // Hover Effect
-                transition={{ duration: 0.15 }} // Smooth Animation
-              >
-                <div className="flex justify-between w-full">
-                  <div className="text-xs text-gray-400 text-right pl-3 pt-1">
-                    {match.leagueNumber === 10 ? 'Legendary Arena' : 'League ' + match.leagueNumber}
-                  </div>
-                  <div className="text-xs text-gray-400 text-right pr-3 pt-1 cursor-pointer"
-                    onMouseEnter={(e) => e.currentTarget.innerText = new Intl.DateTimeFormat('it-IT', { 
-                      year: 'numeric', month: '2-digit', day: '2-digit', 
-                      hour: '2-digit', minute: '2-digit'
-                    }).format(new Date(
-                      Date.UTC(
-                        parseInt(match.battleTime.substring(0, 4)),  
-                        parseInt(match.battleTime.substring(4, 6)) - 1,  
-                        parseInt(match.battleTime.substring(6, 8)),  
-                        parseInt(match.battleTime.substring(9, 11)), 
-                        parseInt(match.battleTime.substring(11, 13))
-                      )
-                    ))}
-                    onMouseLeave={(e) => e.currentTarget.innerText = getTimeAgo(match.battleTime)}>
-                    {getTimeAgo(match.battleTime)}
-                  </div>
-                </div>
-                <div className="flex justify-between w-full">
-                  <div className="flex items-center gap-2 pl-3 pt-3 pb-2 max-h-0.5">
-                    <h3 className="text-lg font-bold">{match.team[0]?.name}</h3>
-                    {match.team[0]?.crowns > match.opponent[0]?.crowns ? (
-                      <h3 className="text-lg font-bold text-green-500">WIN</h3>
-                    ) : (
-                      <h3 className="text-lg font-bold text-red-500">LOSE</h3>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 pr-3 pt-3 pb-0 max-h-0.5">
-                    {match.team[0]?.crowns < match.opponent[0]?.crowns ? (
-                      <h3 className="text-lg font-bold text-green-500">WIN</h3>
-                    ) : (
-                      <h3 className="text-lg font-bold text-red-500">LOSE</h3>
-                    )}
-                    <HoverCard>
-                      <HoverCardTrigger asChild>
-                        <Link href={playerData?.name ? `/user/${decodeURIComponent(match.opponent[0].tag.replace(/^#/, ''))}` : "#"} passHref>
-                          <h3 className="text-lg font-bold cursor-pointer">
-                            {match.opponent[0]?.name}
-                          </h3>
-                        </Link>
-                      </HoverCardTrigger>
-                      <HoverCardContent className="p-4 bg-defaultBg shadow-lg rounded-lg w-80 border-2 border-mainColor">
-                        <div className="flex justify-between items-start">
-                            <p className="text-lg font-semibold text-white">Rank: <span className="font-normal">502</span></p>
-                            <div className="text-right">
-                                <p className="text-sm text-gray-500">Current Trophies</p>
-                                <div className="flex items-center justify-end gap-2">
-                                  <p className="text-2xl font-bold text-white">2839</p>
-                <                 Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
-                                </div>
-                                <hr className="my-1 border-white"/>
-                                <div className="flex items-center justify-end gap-2">
-                                  <p className="text-2xl font-bold text-white">3020</p>
-                                  <Image src="/league10.png" alt="League Icon" className="w-6 h-6" width={1} height={1}/>
-                                </div>
-                                <p className="text-sm text-gray-500">Best Finish</p>
-                            </div>
-                        </div>
-                      </HoverCardContent>
-                    </HoverCard>
-                  </div>
-                </div>
-
-                <div className="flex justify-between pt-1">
-                  <div className="grid grid-cols-4 w-[35%]">
-                    {match.team[0]?.cards?.map((card) => (
-                      <div key={card.id} className="flex flex-col items-center">
-                        <Link href={card.name ? { pathname: `/card/${encodeURIComponent(card.name)}`, query: {
-                              imageUrl: card.evolutionLevel === 1
-                              ? card.iconUrls.evolutionMedium
-                              : card.iconUrls.medium,},}   : "#"}>
-                          <Image
-                            width={90}
-                            height={90}
-                            src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
-                            alt={card.name}
-                            className="w-12 h-16"/>
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-between">
-                    <Image src="https://cdn.royaleapi.com/static/img/ui/crown-blue.png?t=5fe83973c" alt="" className="w-6 h-6 pt-1.5" width={128} height={128}/>
-                    <div className="text-2xl font-bold px-2"> {match.team[0].crowns + ' - ' + match.opponent[0].crowns} </div>
-                    <Image src="https://cdn.royaleapi.com/static/img/ui/crown-red.png?t=5fe83973c" alt="" className="w-6 h-6 pt-1.5" width={128} height={128}/>
-                  </div>
-                  <div className="mt-0 grid grid-cols-4 w-[35%]">
-                    {match.opponent[0]?.cards?.map((card) => (
-                      <div key={card.id} className="flex flex-col items-center gap-0 space-x-0">
-                         <Link href={card.name ? { pathname: `/card/${encodeURIComponent(card.name)}`, query: {
-                              imageUrl: card.evolutionLevel === 1
-                              ? card.iconUrls.evolutionMedium
-                              : card.iconUrls.medium,},}   : "#"}>
-                          <Image
-                            width={90}
-                            height={90}
-                            src={card.evolutionLevel? card.iconUrls.evolutionMedium || card.iconUrls.medium : card.iconUrls.medium}
-                            alt={card.name}
-                            className="w-12 h-16"/>
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
+              <MatchCard index={index} match={match} playerData={playerData}/>
             ))
           )}
         </div>
